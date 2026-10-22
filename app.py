@@ -20,6 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent
 RUTA_PERFIL = BASE_DIR / "data" / "perfil_final_aux.csv"
 RUTA_RCA = BASE_DIR / "data" / "rca_final.csv"
 RUTA_PRECIO_VOLUMEN = BASE_DIR / "data" / "precio_vs_volumen_final.csv"
+RUTA_VARIABLES_VENTANA = BASE_DIR / "data" / "variables_ventana.csv"
+RUTA_VARIABLES_VENTANA_CON_CLUSTERS = (
+    BASE_DIR / "data" / "variables_ventana_con_clusters.csv"
+)
 
 ISO3 = {
     "Argentina": "ARG",
@@ -37,7 +41,7 @@ ISO3 = {
 
 @st.cache_data
 def cargar_datos():
-    """Carga los tres CSV y agrega el codigo ISO3 para el mapa."""
+    """Carga los datasets del tablero y prepara sus columnas numericas."""
     try:
         perfil = pd.read_csv(RUTA_PERFIL)
         rca = pd.read_csv(RUTA_RCA)
@@ -45,6 +49,46 @@ def cargar_datos():
     except FileNotFoundError as error:
         st.error(f"No se encontro el archivo de datos: {error.filename}")
         st.stop()
+
+    if RUTA_VARIABLES_VENTANA.exists():
+        variables_ventana = pd.read_csv(RUTA_VARIABLES_VENTANA)
+        if (
+            "Cluster" not in variables_ventana.columns
+            and RUTA_VARIABLES_VENTANA_CON_CLUSTERS.exists()
+        ):
+            variables_ventana = pd.read_csv(RUTA_VARIABLES_VENTANA_CON_CLUSTERS)
+        if "Area" in variables_ventana:
+            variables_ventana["ISO3"] = variables_ventana["Area"].map(ISO3)
+        if "Cluster" in variables_ventana:
+            variables_ventana["Cluster"] = pd.to_numeric(
+                variables_ventana["Cluster"], errors="coerce"
+            )
+        for column in ["HHI_Familias", "k60"]:
+            if column in variables_ventana:
+                variables_ventana[column] = pd.to_numeric(
+                    variables_ventana[column], errors="coerce"
+                )
+        nombres_clusters = {
+            0: "Consolidado/Diversificado",
+            1: "Volátil/Especialista",
+            2: "Crisis/Dependiente",
+        }
+        if "Cluster" in variables_ventana:
+            variables_ventana["Cluster_Nombre"] = variables_ventana["Cluster"].map(
+                nombres_clusters
+            )
+        else:
+            st.warning(
+                "El archivo de variables de ventana no contiene la columna "
+                "'Cluster'. Las vistas de clustering quedaran sin datos."
+            )
+            variables_ventana["Cluster_Nombre"] = pd.NA
+    else:
+        st.warning(
+            f"No se encontro el archivo opcional de clustering: "
+            f"{RUTA_VARIABLES_VENTANA.name}. Las vistas de clustering quedaran sin datos."
+        )
+        variables_ventana = pd.DataFrame()
 
     for dataframe in (perfil, rca, precio_volumen):
         dataframe["ISO3"] = dataframe["Area"].map(ISO3)
@@ -70,7 +114,7 @@ def cargar_datos():
     for column in numeric_columns["precio_volumen"]:
         precio_volumen[column] = pd.to_numeric(precio_volumen[column], errors="coerce")
 
-    return perfil, rca, precio_volumen
+    return perfil, rca, precio_volumen, variables_ventana
 
 
 def mostrar_vacio(mensaje):
@@ -91,7 +135,33 @@ def normalizar_por_columna(dataframe, columnas):
     return resultado
 
 
-perfil, rca, precio_volumen = cargar_datos()
+def render_kpi_card(title, value, subtitle, color):
+    """Renderiza una tarjeta KPI con estilos compatibles con el modo oscuro."""
+    st.markdown(
+        f"""
+        <div style="
+            background-color: #1E1E2E;
+            border-left: 5px solid {color};
+            border-radius: 10px;
+            padding: 1rem 1.1rem;
+            margin-bottom: 0.8rem;
+        ">
+            <div style="color: #FFFFFF; font-size: 0.9rem; font-weight: 600;">
+                {title}
+            </div>
+            <div style="color: #FFFFFF; font-size: 1.7rem; font-weight: 700; margin: 0.3rem 0;">
+                {value}
+            </div>
+            <div style="color: #B8B8C7; font-size: 0.8rem;">
+                {subtitle}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+perfil, rca, precio_volumen, variables_ventana = cargar_datos()
 todos_los_paises = list(ISO3)
 
 # -----------------------------------------------------------------------------
@@ -125,8 +195,14 @@ precio_vol_filtrado = precio_volumen[
     & precio_volumen["Year"].between(anios[0], anios[1])
 ].copy()
 
-tab_panorama, tab_perfil, tab_comercio, tab_datos = st.tabs(
-    ["🌎 Panorama Regional", "🔍 Perfil por País", "📦 Comercio y Precios", "📋 Datos"]
+tab_panorama, tab_perfil, tab_comercio, tab_datos, tab_clusters = st.tabs(
+    [
+        "🌎 Panorama Regional",
+        "🔍 Perfil por País",
+        "📦 Comercio y Precios",
+        "📋 Datos",
+        "🧩 Tipologías y Clusters",
+    ]
 )
 
 # -----------------------------------------------------------------------------
@@ -314,3 +390,93 @@ with tab_datos:
             file_name=f"{dataset_nombre.lower().replace(' ', '_')}.csv",
             mime="text/csv",
         )
+
+# -----------------------------------------------------------------------------
+# Tab 5: tipologias y clusters
+# -----------------------------------------------------------------------------
+with tab_clusters:
+    st.header("Tipologías y Clusters")
+    ventanas_disponibles = ["2005-11", "2012-18", "2019-24"]
+    ventana_elegida = st.selectbox("Ventana temporal", ventanas_disponibles)
+
+    if variables_ventana.empty:
+        mostrar_vacio("No hay datos de clustering disponibles.")
+    elif not {
+        "Area",
+        "Ventana",
+        "Cluster_Nombre",
+        "ISO3",
+        "HHI_Familias",
+        "k60",
+    }.issubset(variables_ventana.columns):
+        mostrar_vacio(
+            "El archivo de clustering no contiene las columnas necesarias para esta vista."
+        )
+    else:
+        datos_cluster = variables_ventana[
+            (variables_ventana["Ventana"] == ventana_elegida)
+            & variables_ventana["Area"].isin(paises_seleccionados)
+        ].copy()
+
+        if datos_cluster.empty:
+            mostrar_vacio(
+                f"No hay datos de clustering para la ventana {ventana_elegida} "
+                "y los países seleccionados."
+            )
+        else:
+            columna_mapa, columna_kpi = st.columns([2, 1])
+
+            with columna_mapa:
+                colores_clusters = {
+                    "Consolidado/Diversificado": "#2E8B57",
+                    "Volátil/Especialista": "#F2C94C",
+                    "Crisis/Dependiente": "#D64545",
+                }
+                mapa_clusters = px.choropleth(
+                    datos_cluster,
+                    locations="ISO3",
+                    color="Cluster_Nombre",
+                    locationmode="ISO-3",
+                    scope="south america",
+                    hover_name="Area",
+                    hover_data=["Cluster_Nombre"],
+                    color_discrete_map=colores_clusters,
+                    title=f"Tipologías de competitividad ({ventana_elegida})",
+                )
+                mapa_clusters.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    legend_title_text="Cluster",
+                )
+                mapa_clusters.update_geos(bgcolor="rgba(0,0,0,0)")
+                st.plotly_chart(mapa_clusters, use_container_width=True)
+
+            cluster_mas_comun = (
+                datos_cluster.groupby("Cluster_Nombre")["Area"]
+                .nunique()
+                .sort_values(ascending=False)
+            )
+            cluster_nombre = cluster_mas_comun.index[0]
+            paises_cluster_mas_comun = int(cluster_mas_comun.iloc[0])
+
+            with columna_kpi:
+                promedio_hhi = datos_cluster["HHI_Familias"].mean()
+                promedio_k60 = datos_cluster["k60"].mean()
+                render_kpi_card(
+                    "HHI promedio",
+                    f"{promedio_hhi:,.4f}" if pd.notna(promedio_hhi) else "N/D",
+                    "Promedio de HHI_Familias",
+                    "#2E8B57",
+                )
+                render_kpi_card(
+                    "k60 promedio",
+                    f"{promedio_k60:,.2f}" if pd.notna(promedio_k60) else "N/D",
+                    "Promedio de k60",
+                    "#F2C94C",
+                )
+                render_kpi_card(
+                    "Cluster dominante",
+                    str(paises_cluster_mas_comun),
+                    f"Países en {cluster_nombre}",
+                    "#D64545",
+                )
