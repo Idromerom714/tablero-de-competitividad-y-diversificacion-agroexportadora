@@ -1,38 +1,38 @@
 Item,CPC,Producto_ES,Familia_ES,Nivel_proceso
-Wheat,'0111,Trigo,Granos Básicos,3
-Maize (corn),'0112,Maíz,Granos Básicos,3
-Asparagus,'01211,Asparagus,Otros (Revisar),3
-Avocados,'01311,Avocados,Otros (Revisar),3
-Bananas,'01312,Banano,Banano,3
-"Mangoes, guavas and mangosteens",'01316,"Mangoes, guavas and mangosteens",Otros (Revisar),3
-Grapes,'01330,Uvas,Uva y Vino,3
-Apples,'01341,Apples,Frutas Templadas,3
-Cherries,'01344.02,Cherries,Otros (Revisar),3
-Blueberries,'01355.01,Blueberries,Otros (Revisar),3
-Cranberries,'01355.02,Cranberries,Otros (Revisar),3
-Other berries and fruits of the genus vaccinium n.e.c.,'01355.90,Other berries and fruits of the genus vaccinium n.e.c.,Otros (Revisar),3
+Wheat,'0111,Trigo,Granos Básicos,1
+Maize (corn),'0112,Maíz,Granos Básicos,1
+Asparagus,'01211,Espárragos,Hortalizas,1
+Avocados,'01311,Aguacates (paltas),Frutas Tropicales,1
+Bananas,'01312,Bananos,Banano,1
+"Mangoes, guavas and mangosteens",'01316,"Mangos, guayabas y mangostanes",Frutas Tropicales,1
+Grapes,'01330,Uvas,Uva y Vino,1
+Apples,'01341,Manzanas,Frutas Templadas,1
+Cherries,'01344.02,Cerezas,Frutas Templadas,1
+Blueberries,'01355.01,Arándanos,Frutas Templadas,1
+Cranberries,'01355.02,Arándanos rojos,Frutas Templadas,1
+Other berries and fruits of the genus vaccinium n.e.c.,'01355.90,Otras bayas y frutos del género Vaccinium n.c.p.,Frutas Templadas,1
 Soya beans,'0141,Habas de soya,Complejo Soya,1
-Sesame seed,'01444,Sesame seed,Otros (Revisar),3
-"Coffee, green",'01610,Café verde,Café,1
-Cocoa beans,'01640,Cocoa beans,Otros (Revisar),1
-"Chillies and peppers, dry (Capsicum spp., Pimenta spp.), raw",'01652,"Chillies and peppers, dry (Capsicum spp., Pimenta spp.), raw",Otros (Revisar),1
-"Beans, dry",'01701,"Beans, dry",Otros (Revisar),1
-Cattle,'02111,Cattle,Carne Bovina,1
-"Meat of cattle boneless, fresh or chilled",'21111.02,Carne de bovino,Carne Bovina,1
-"Meat of pig with the bone, fresh or chilled",'21113.01,"Meat of pig with the bone, fresh or chilled",Carne Bovina,1
-"Meat of pig boneless, fresh or chilled",'21113.02,"Meat of pig boneless, fresh or chilled",Carne Bovina,1
-"Meat of chickens, fresh or chilled",'21121,"Meat of chickens, fresh or chilled",Carne Bovina,1
-"Brazil nuts, shelled",'21429.01,"Brazil nuts, shelled",Otros (Revisar),3
-Soya bean oil,'2161,Soya bean oil,Complejo Soya,2
-Palm oil,'2165,Aceite de palma,Palma,2
-Cake of soya beans,'21910.03,Habas de soya,Complejo Soya,1
-Whole milk powder,'22211,Leche,Lácteos,3
-"Rice, milled",'23161.02,"Rice, milled",Granos Básicos,3
-"Communion wafers, empty cachets of a kind suitable for pharmaceutical use, sealing wafers, rice paper and similar products.",'23490.01,"Communion wafers, empty cachets of a kind suitable for pharmaceutical use, sealing wafers, rice paper and similar products.",Granos Básicos,3
-Raw cane or beet sugar (centrifugal only),'2351f,Raw cane or beet sugar (centrifugal only),Azúcar,1
-Refined sugar,'23520,Azúcar refinada,Azúcar,2
-"Homogenized cooked fruit, prepared",'23991.03,"Homogenized cooked fruit, prepared",Otros (Revisar),3
-"Undenatured ethyl alcohol of an alcoholic strength by volume of less than 80% vol; spirits, liqueurs and other spirituous beverages",'2413,"Undenatured ethyl alcohol of an alcoholic strength by volume of less than 80% vol; spirits, liqueurs and other spirituous beverages",Otros (Revisar),3
+Sesame seed,'01444,Semilla de sésamo (ajonjolí),Fibras y Oleaginosas,1
+"Coffee, green",'01610,Café verde / oro,Café,2
+Cocoa beans,'01640,Granos de cacao,Cacao,1
+"Chillies and peppers, dry (Capsicum spp., Pimenta spp.), raw",'01652,Chiles y pimientos secos (Capsicum spp.),Hortalizas,1
+"Beans, dry",'01701,Frijoles secos,Granos Básicos,1
+Cattle,'02111,Ganado vacuno en pie,Carne Bovina,1
+"Meat of cattle boneless, fresh or chilled",'21111.02,Carne de bovino deshuesada,Carne Bovina,2
+"Meat of pig with the bone, fresh or chilled",'21113.01,Carne de cerdo con hueso,Carne Porcina,2
+"Meat of pig boneless, fresh or chilled",'21113.02,Carne de cerdo deshuesada,Carne Porcina,2
+"Meat of chickens, fresh or chilled",'21121,Carne de pollo fresca o refrigerada,Carne de Aves,2
+"Brazil nuts, shelled",'21429.01,Nueces de Brasil peladas,Frutos Secos,2
+Soya bean oil,'2161,Aceite de soya crudo,Complejo Soya,2
+Palm oil,'2165,Aceite de palma crudo,Palma,2
+Cake of soya beans,'21910.03,Torta de soya (harina de extracción),Complejo Soya,2
+Whole milk powder,'22211,Leche entera en polvo,Lácteos,2
+"Rice, milled",'23161.02,Arroz elaborado,Granos Básicos,2
+"Communion wafers, empty cachets of a kind suitable for pharmaceutical use, sealing wafers, rice paper and similar products.",'23490.01,Oblatas, sellos y productos similares,Alimentos Preparados
+Raw cane or beet sugar (centrifugal only),'2351f,Azúcar de caña crudo (centrifugado),Azúcar,2
+Refined sugar,'23520,Azúcar refinada,Azúcar,3
+"Homogenized cooked fruit, prepared",'23991.03,Frutas cocidas homogeneizadas preparadas,Alimentos Preparados,3
+"Undenatured ethyl alcohol of an alcoholic strength by volume of less than 80% vol; spirits, liqueurs and other spirituous beverages",'2413,Alcohol etílico y bebidas espirituosas,Bebidas Alcohólicas,3
 Wine,'24212.02,Vino,Uva y Vino,3
-"Beer of barley, malted",'24310.01,"Beer of barley, malted",Otros (Revisar),3
-Other manufactured tobacco and manufactured tobacco substitutes; 'homogenized' or 'reconstituted' tobacco; tobacco extracts and essences,'25090,Other manufactured tobacco and manufactured tobacco substitutes; 'homogenized' or 'reconstituted' tobacco; tobacco extracts and essences,Otros (Revisar),3
+"Beer of barley, malted",'24310.01,Cerveza de malta,Bebidas Alcohólicas,3
+Other manufactured tobacco and manufactured tobacco substitutes; 'homogenized' or 'reconstituted' tobacco; tobacco extracts and essences,'25090,Tabaco manufacturado y sustitutos,Tabaco,3
