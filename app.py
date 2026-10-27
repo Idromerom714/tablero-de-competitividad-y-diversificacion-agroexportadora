@@ -399,7 +399,7 @@ with tab_clusters:
     ventanas_disponibles = ["2005-11", "2012-18", "2019-24"]
     ventana_elegida = st.selectbox("Ventana temporal", ventanas_disponibles)
 
-    if variables_ventana.empty:
+    if variables_ventana_con_clusters.empty:
         mostrar_vacio("No hay datos de clustering disponibles.")
     elif not {
         "Area",
@@ -408,14 +408,14 @@ with tab_clusters:
         "ISO3",
         "HHI_Familias",
         "k60",
-    }.issubset(variables_ventana.columns):
+    }.issubset(variables_ventana_con_clusters.columns):
         mostrar_vacio(
             "El archivo de clustering no contiene las columnas necesarias para esta vista."
         )
     else:
-        datos_cluster = variables_ventana[
-            (variables_ventana["Ventana"] == ventana_elegida)
-            & variables_ventana["Area"].isin(paises_seleccionados)
+        datos_cluster = variables_ventana_con_clusters[
+            (variables_ventana_con_clusters["Ventana"] == ventana_elegida)
+            & variables_ventana_con_clusters["Area"].isin(paises_seleccionados)
         ].copy()
 
         if datos_cluster.empty:
