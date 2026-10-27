@@ -20,7 +20,6 @@ BASE_DIR = Path(__file__).resolve().parent
 RUTA_PERFIL = BASE_DIR / "data" / "perfil_final_aux.csv"
 RUTA_RCA = BASE_DIR / "data" / "rca_final.csv"
 RUTA_PRECIO_VOLUMEN = BASE_DIR / "data" / "precio_vs_volumen_final.csv"
-RUTA_VARIABLES_VENTANA = BASE_DIR / "data" / "variables_ventana_con_clusters.csv"
 RUTA_VARIABLES_VENTANA_CON_CLUSTERS = (
     BASE_DIR / "data" / "variables_ventana_con_clusters.csv"
 )
@@ -50,45 +49,45 @@ def cargar_datos():
         st.error(f"No se encontro el archivo de datos: {error.filename}")
         st.stop()
 
-    if RUTA_VARIABLES_VENTANA.exists():
-        variables_ventana = pd.read_csv(RUTA_VARIABLES_VENTANA)
-        if (
-            "Cluster" not in variables_ventana.columns
-            and RUTA_VARIABLES_VENTANA_CON_CLUSTERS.exists()
-        ):
-            variables_ventana = pd.read_csv(RUTA_VARIABLES_VENTANA_CON_CLUSTERS)
-        if "Area" in variables_ventana:
-            variables_ventana["ISO3"] = variables_ventana["Area"].map(ISO3)
-        if "Cluster" in variables_ventana:
-            variables_ventana["Cluster"] = pd.to_numeric(
-                variables_ventana["Cluster"], errors="coerce"
+    if RUTA_VARIABLES_VENTANA_CON_CLUSTERS.exists():
+        variables_ventana_con_clusters = pd.read_csv(
+            RUTA_VARIABLES_VENTANA_CON_CLUSTERS
+        )
+        if "Area" in variables_ventana_con_clusters:
+            variables_ventana_con_clusters["ISO3"] = (
+                variables_ventana_con_clusters["Area"].map(ISO3)
+            )
+        if "Cluster" in variables_ventana_con_clusters:
+            variables_ventana_con_clusters["Cluster"] = pd.to_numeric(
+                variables_ventana_con_clusters["Cluster"], errors="coerce"
             )
         for column in ["HHI_Familias", "k60"]:
-            if column in variables_ventana:
-                variables_ventana[column] = pd.to_numeric(
-                    variables_ventana[column], errors="coerce"
+            if column in variables_ventana_con_clusters:
+                variables_ventana_con_clusters[column] = pd.to_numeric(
+                    variables_ventana_con_clusters[column], errors="coerce"
                 )
         nombres_clusters = {
             0: "Consolidado/Diversificado",
             1: "Volátil/Especialista",
             2: "Crisis/Dependiente",
         }
-        if "Cluster" in variables_ventana:
-            variables_ventana["Cluster_Nombre"] = variables_ventana["Cluster"].map(
-                nombres_clusters
+        if "Cluster" in variables_ventana_con_clusters:
+            variables_ventana_con_clusters["Cluster_Nombre"] = (
+                variables_ventana_con_clusters["Cluster"].map(nombres_clusters)
             )
         else:
             st.warning(
                 "El archivo de variables de ventana no contiene la columna "
                 "'Cluster'. Las vistas de clustering quedaran sin datos."
             )
-            variables_ventana["Cluster_Nombre"] = pd.NA
+            variables_ventana_con_clusters["Cluster_Nombre"] = pd.NA
     else:
         st.warning(
             f"No se encontro el archivo opcional de clustering: "
-            f"{RUTA_VARIABLES_VENTANA.name}. Las vistas de clustering quedaran sin datos."
+            f"{RUTA_VARIABLES_VENTANA_CON_CLUSTERS.name}. Las vistas de clustering "
+            "quedaran sin datos."
         )
-        variables_ventana = pd.DataFrame()
+        variables_ventana_con_clusters = pd.DataFrame()
 
     for dataframe in (perfil, rca, precio_volumen):
         dataframe["ISO3"] = dataframe["Area"].map(ISO3)
@@ -114,7 +113,7 @@ def cargar_datos():
     for column in numeric_columns["precio_volumen"]:
         precio_volumen[column] = pd.to_numeric(precio_volumen[column], errors="coerce")
 
-    return perfil, rca, precio_volumen, variables_ventana
+    return perfil, rca, precio_volumen, variables_ventana_con_clusters
 
 
 def mostrar_vacio(mensaje):
@@ -161,7 +160,7 @@ def render_kpi_card(title, value, subtitle, color):
     )
 
 
-perfil, rca, precio_volumen, variables_ventana = cargar_datos()
+perfil, rca, precio_volumen, variables_ventana_con_clusters = cargar_datos()
 todos_los_paises = list(ISO3)
 
 # -----------------------------------------------------------------------------
