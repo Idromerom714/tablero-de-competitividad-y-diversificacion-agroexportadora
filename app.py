@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent
 RUTA_PERFIL = BASE_DIR / "data" / "perfil_final_aux.csv"
 RUTA_RCA = BASE_DIR / "data" / "rca_final.csv"
 RUTA_PRECIO_VOLUMEN = BASE_DIR / "data" / "precio_vs_volumen_final.csv"
-RUTA_VARIABLES_VENTANA = BASE_DIR / "data" / "variables_ventana.csv"
+RUTA_VARIABLES_VENTANA = BASE_DIR / "data" / "variables_ventana_con_clusters.csv"
 RUTA_VARIABLES_VENTANA_CON_CLUSTERS = (
     BASE_DIR / "data" / "variables_ventana_con_clusters.csv"
 )
